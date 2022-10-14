@@ -1,0 +1,9 @@
+FROM nextcloud:fpm
+
+RUN sed -i s@/deb.debian.org/mirrors.ustc.edu.cn/@g /etc/apt/sources.list\
+	&& apt-get clean && apt-get update \
+	&& apt-get -y install sudo vim cron ffmpeg exiftool \
+	&& apt-get -y install software-properties-common imagemagick imagemagick-common libmagickcore-6.q16-6-extra \
+	&& apt-get autoremove && apt-get clean && rm -rf /var/lib/apt/lists/* \
+	&& echo "memory_limit=2048M\nupload_max_filesize=4096M\npost_max_size=4096M\ndefault_socket_timeout=360\nmax_input_time=360\nmax_execution_time=360" > /usr/local/etc/php/conf.d/nextcloud.ini \
+	&& echo "*/5  *  *  *  * sudo -u www-data php -d memory_limit=-1 -f /var/www/html/cron.php 2>&1 /dev/null" >> /var/spool/cron/crontabs/root

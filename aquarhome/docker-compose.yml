@@ -1,0 +1,21 @@
+version: "3.9"
+services:
+
+  app:
+    image: finetu/aquarhome:latest
+    restart: "unless-stopped"
+    ports:
+      - 8160:8172
+      # 视频聊天组件需要预留100个端口作为流媒体的数据通道
+      - 10000-10100:10000-10100
+    volumes:
+      # 数据目录，包含核心配置数据，缓存/上传文件等
+      - E:\\docker_containers\\aquarhome\\data:/var/aquardata
+      # 供文件同步功能使用，若不需要此功能可选择一个空文件夹填写
+      - E:\\docker_containers\\aquarhome\\aquarpool:/opt/aquarpool
+      # 日志文件
+      - E:\\docker_containers\\aquarhome\\logs:/root/.pm2/logs
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TIME_ZONE: Asia/Shanghai

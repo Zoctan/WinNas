@@ -1,0 +1,16 @@
+**/logs/
+*.exe
+desktop.ini
+
+*aquarhome/aquarpool/
+*aquarhome/data/
+
+*aria2/config/
+
+*nextcloud/app/
+*nextcloud/cache/
+*nextcloud/db/
+
+*syncthing/discosrv
+*syncthing/strelaysrv
+README/NAS需求分析.md

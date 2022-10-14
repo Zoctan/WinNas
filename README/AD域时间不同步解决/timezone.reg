@@ -1,0 +1,19 @@
+Windows Registry Editor Version 5.00
+ 
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\DateTime\Servers]
+@="0"
+"0"="ntp.dtops.cc"
+ 
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\w32time\Parameters]
+"NtpServer"="ntp.dtops.cc"
+"Type"="NTP"
+ 
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\w32time\TimeProviders\NtpClient]
+"SpecialPollInterval"=dword:00000258
+ 
+ 
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\w32time\Config]
+"AnnounceFlags"=dword:0000000a
+ 
+[HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\w32time\TimeProviders\NtpServer]
+"Enabled"=dword:00000001

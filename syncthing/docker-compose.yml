@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  # 发现服务器
+  discovery_server:
+    image: syncthing/discosrv
+    command: -debug -listen=":8443" 
+    environment:
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - E:\\docker_containers\\syncthing\\discosrv:/var/stdiscosrv
+    ports:
+      - 8443:8443
+    restart: always
+
+  # 中继服务器
+  relay_server:
+    image: syncthing/relaysrv:latest
+    command: -debug -pools="" -listen=":22067"
+    environment:
+      PUID: 1000
+      PGID: 1000
+    volumes:
+      - E:\\docker_containers\\syncthing\\strelaysrv:/var/strelaysrv
+    ports:
+      - 22067:22067  # 中继服务器的数据连接端口（必须开启）
+      #- 22070:22070  # 用于公用的中继服务器池，显示数据传输、客户端数量等状态，可不开启
+    restart: always

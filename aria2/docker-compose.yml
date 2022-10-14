@@ -1,0 +1,48 @@
+version: "3.9"
+services:
+
+  aria2-pro:
+    image: p3terx/aria2-pro
+    restart: "unless-stopped"
+    environment:
+      PUID: 1000
+      PGID: 1000
+      # rpc密钥token
+      RPC_SECRET: "pp0816"
+      # prc端口
+      RPC_PORT: 6800
+      # BT监听端口
+      LISTEN_PORT: 6888
+      # 缓存
+      DISK_CACHE: 1024M
+      IPV6_MODE: false
+      TIME_ZONE: Asia/Shanghai
+      # 自动更新tracker
+      UPDATE_TRACKERS: true
+      CUSTOM_TRACKER_URL: https://cdn.staticaly.com/gh/XIU2/TrackersListCollection/master/all.txt
+    volumes:
+      # 映射配置目录，默认为当前目录的aria2-confg
+      - E:\\docker_containers\\aria2\\config:/config
+      # 映射下载目录，默认为当前目录的aria2-downloads
+      - E:\\family_share\\Downloads:/downloads
+    ports:
+      - 6800:6800
+      - 6888:6888
+      - 6888:6888/udp
+    # Since Aria2 will continue to generate logs, limit the log size to 1M to prevent your hard disk from running out of space.
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m
+        
+  # ariang前端web
+  ariang:
+    image: p3terx/ariang
+    restart: "unless-stopped"
+    network_mode: bridge
+    ports:
+      - 6880:6880
+    logging:
+      driver: json-file
+      options:
+        max-size: 1m

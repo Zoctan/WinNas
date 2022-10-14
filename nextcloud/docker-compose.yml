@@ -1,0 +1,71 @@
+version: "3.9"
+services:
+
+  db: # 给每个容器单独配置一个名称
+    image: mariadb # 具体的镜像名称，可以使用“:”指定镜像的版本
+    restart: "unless-stopped" # 重启策略，分为no、on-failure、on-failure:x、always、unless-stopped
+    expose: # 将指定的端口暴露给links的容器，而不对宿主机开放
+     # 和ports的区别在于，ports可以映射宿主机别的端口到容器中
+     - "3306"
+    volumes: # 将宿主机的路径映射到容器中的指定位置
+     - E:\\docker_containers\\nextcloud\\db\\data:/var/lib/mysql
+     - E:\\docker_containers\\nextcloud\\db\\config:/etc/mysql
+    environment: # 对容器创建指定多个环境变量
+      MYSQL_ROOT_PASSWORD: root # root密码
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud # 非root账户给nextcloud使用
+      MYSQL_PASSWORD: nextcloud # 非root账户密码
+      TIME_ZONE: Asia/Shanghai
+    command: # 覆盖容器启动后默认执行的命令
+       --max_connections=1000
+       --wait_timeout=28800
+       --interactive_timeout=28800
+       --default-authentication-plugin=mysql_native_password
+       --character-set-server=utf8mb4
+       --collation-server=utf8mb4_general_ci
+
+  cache:
+    image: redis
+    restart: "unless-stopped"
+    expose:
+     - "6379"
+    volumes:
+     - E:\\docker_containers\\nextcloud\\cache:/data
+    command: redis-server --requirepass "root" # redis密码
+     
+  app:
+    build: # 以NextCloudDockerfile构建容器
+      context: .
+      dockerfile: ./NextCloudDockerfile
+    restart: "unless-stopped"
+    expose:
+     - "9000"
+    volumes:
+     - E:\\docker_containers\\nextcloud\\app\\html:/var/www/html
+     - E:\\docker_containers\\nextcloud\\app\\data:/var/www/html/data
+     - E:\\docker_containers\\nextcloud\\app\\config:/var/www/html/config
+     - E:\\docker_containers\\nextcloud\\app\\custom_apps:/var/www/html/custom_apps
+    links: # 将容器与当前容器链接起来，以使得当前容器可以访问目标容器expose的端口
+     # 容器的原名:映射到当前容器中的名称
+     - db:db
+     - cache:cache
+    depends_on: # 依赖的容器列表，只有这些容器都成功启动了，才会启动当前容器
+     - db
+     - cache
+
+  proxy: # 叫做proxy是因为是作为代理来提供服务
+    image: nginx
+    restart: "unless-stopped"
+    expose:
+      - "80"
+    ports: # 将容器内的端口映射到宿主机上
+    # 将容器的443端口映射到宿主机的7433端口
+     - 7433:443
+    volumes:
+     - E:\\docker_containers\\nextcloud\\app\\html:/var/www/html
+     - E:\\docker_containers\\nextcloud\\proxy\\conf.d:/etc/nginx/conf.d:ro
+     - E:\\docker_containers\\nextcloud\\proxy\\ssl_certs:/etc/nginx/ssl_certs:ro
+    links:
+     - app:app
+    depends_on:
+     - app
