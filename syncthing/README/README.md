@@ -1,4 +1,6 @@
-Syncthing是开源的文件同步程序，利用Syncthing项目的服务器，可以在多台计算机之间同步文件。
+# Syncthing
+
+开源的文件同步程序，利用Syncthing项目的服务器，可以在多台计算机之间同步文件。
 
 参考搭建：https://cloud.tencent.com/developer/article/1982866
 官网：https://syncthing.net/
@@ -9,7 +11,7 @@ Syncthing是开源的文件同步程序，利用Syncthing项目的服务器，�
 
 Windows web客户端已经下好放在上层目录 ../SyncthingWebClient.exe
 
-# 自建发现服务器和中继服务器
+## 自建发现服务器和中继服务器
 
 但为了提高文件同步的效率，我们可以通过自建发现服务器（discovery-server）和中继服务器（relay-server）的方法。
 
@@ -29,7 +31,7 @@ command命令的配置部分说明：
 - NATWORK_TIMEOUT=3m0s # 客户端和中继服务器之间的操作超时时间
 - PING_INTERVAL=1m30s # ping的发送频率
 
-# 客户端Syncthing的设置
+## 客户端Syncthing的设置
 
 在每个Syncthing客户端上进行都要一样配置：设置 - 连接：
 
@@ -42,25 +44,24 @@ default,relay://公网IP:22067/?id=中继服务器device ID
 通过侦听程序和设备发现的数量，可以判断客户端是否成功连接上了自建服务。
 
 关于发现服务器的https证书来源，官网提到了三种证书的选择：
-1、CA机构发布的证书
-2、自建发现服务器在建好后根据device ID自动生成的证书（推荐）
-3、利用反向代理
+1. CA机构发布的证书
+2. 自建发现服务器在建好后根据device ID自动生成的证书（推荐）
+3. 利用反向代理
 
 前两种证书，对应的发现服务器地址，需要传递device ID，而第三种无需传递device ID
 
-# 两个客户端Syncthing进行同步
+## 两个客户端Syncthing进行同步
 
-1、互相添加对方为远程设备
+1. 互相添加对方为远程设备
 在客户端A，点击添加远程设备，扫描或输入客户端B的device ID
 （比如安卓客户端，扫描添加 Nas 客户端二维码）
-
-2、等待一段时间，发现服务器会自动提醒有新客户端A加入。
+2. 等待一段时间，发现服务器会自动提醒有新客户端A加入。
 （Nas 客户端会提示安卓客户端加入）
+3. 选择共享文件夹（两个客户端的文件夹ID要一致）
 
-3、选择共享文件夹（两个客户端的文件夹ID要一致）
+## 手机上传备份，删除本地，只留 Nas 数据
 
-手机数据备份到 Nas 后删除，但不删除 Nas 上的数据：
-1、Nas - Advanced - Folders - 选择需要忽略删除动作的 Folder - 选择 ignoreDelete；
-2、Nas 的共享文件夹 Folder Type 要选择 Receive Only；
-3、手机的共享文件夹 Folder Type 要选择 Send Only。
+1. Nas - Advanced - Folders - 选择需要忽略删除动作的 Folder - 选择 ignoreDelete；
+2. Nas 的共享文件夹 Folder Type 要选择 Receive Only；
+3. 手机的共享文件夹 Folder Type 要选择 Send Only。
 
